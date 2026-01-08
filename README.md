@@ -6,7 +6,7 @@
 
 **Project Title:** Disease Prediction System Using Machine Learning  
 **Submitted by:** Kritish Acharya  
-**Roll No:** [Your Roll No]  
+**Roll No:** [242025112]  
 **Program:** BTech CSE  
 **Organization:** Denvey EduGrow  
 **Submission Date:** 10 January 2026  
