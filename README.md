@@ -79,9 +79,29 @@ The dataset was obtained from publicly available healthcare repositories/synthet
 ---
 
 ## 6. Tools & Technologies Used
+## 🚀 Quick Start - Run in 5 Minutes
 
-```markdown
+```bash
+
 🛠️ Programming Language: Python
 📊 Libraries: NumPy, Pandas, Scikit-learn
 💻 Platform: Jupyter Notebook / VS Code
 🔄 Version Control: GitHub
+
+## 🚀 Quick Start - Run in 5 Minutes
+# 1. Clone & Enter Project
+git clone https://github.com/kritish-ER/medical-chatbot.git
+cd medical-chatbot
+
+# 2. Create Virtual Environment & Activate
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# 3. Install Dependencies
+pip install -r requirements.txt
+
+# 4. Train Models (First Time)
+python train_model.py
+
+# 5. Run App
+streamlit run app.py
