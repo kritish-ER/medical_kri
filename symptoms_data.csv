@@ -1,0 +1,11 @@
+fever,cough,headache,sore_throat,fatigue,nausea,vomiting,diarrhea,chest_pain,shortness_of_breath,disease
+1,1,1,1,1,0,0,0,0,0,Flu
+0,1,1,1,1,0,0,0,0,0,Common Cold
+1,0,1,0,1,0,0,0,0,0,Migraine
+1,0,0,0,1,1,1,0,0,0,Food Poisoning
+0,0,0,0,0,0,0,1,0,0,Gastroenteritis
+1,0,0,0,1,0,0,0,1,1,Pneumonia
+1,1,0,0,1,0,0,0,0,0,Viral Infection
+0,0,1,0,1,0,0,0,0,0,Tension Headache
+1,0,1,0,1,1,0,0,0,0,Dehydration
+0,1,0,1,1,0,0,0,0,0,Allergies
