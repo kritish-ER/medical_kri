@@ -12,6 +12,7 @@
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body class="dark-theme">
     <div class="app-background">
@@ -51,7 +52,26 @@
                     <i class="fa-solid fa-chart-line"></i>
                     <span>Dataset Analytics</span>
                 </button>
+                <!-- Admin Panel button — visible to admins only -->
+                <button class="nav-btn admin-nav" id="adminNavBtn" data-tab="" style="display:none;" onclick="window.location.href='/admin'">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Admin Panel</span>
+                </button>
             </nav>
+
+            <!-- User Profile Widget -->
+            <div class="sidebar-profile" id="userProfile">
+                <div class="profile-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <span class="profile-name" id="profileName">Loading...</span>
+                    <span class="role-badge user" id="profileRole">user</span>
+                </div>
+                <button class="logout-btn-sm" id="logoutBtnSm" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
 
             <div class="system-status-card">
                 <div class="status-indicator online"></div>
@@ -214,5 +234,31 @@
     </div>
 
     <script src="/static/js/app.js"></script>
+    <script>
+    // Auth check & user profile on load
+    (async () => {
+        try {
+            const res = await fetch('/api/auth/me');
+            const data = await res.json();
+            if (!data.logged_in) {
+                window.location.href = '/login';
+                return;
+            }
+            document.getElementById('profileName').textContent = data.username;
+            const roleBadge = document.getElementById('profileRole');
+            roleBadge.textContent = data.role;
+            roleBadge.className = 'role-badge ' + data.role;
+            if (data.role === 'admin') {
+                document.getElementById('adminNavBtn').style.display = 'flex';
+            }
+        } catch {
+            window.location.href = '/login';
+        }
+        document.getElementById('logoutBtnSm').addEventListener('click', async () => {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login';
+        });
+    })();
+    </script>
 </body>
 </html>

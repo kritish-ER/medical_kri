@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediMind AI | Login</title>
+    <meta name="description" content="Sign in to MediMind AI — your intelligent medical assistant for symptom diagnosis, disease information, and medication guidance.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
+</head>
+<body class="dark-theme auth-body">
+    <!-- Animated Background -->
+    <div class="auth-bg">
+        <div class="auth-orb orb-1"></div>
+        <div class="auth-orb orb-2"></div>
+        <div class="auth-orb orb-3"></div>
+        <div class="auth-grid"></div>
+    </div>
+
+    <!-- Floating Medical Icons -->
+    <div class="floating-icons">
+        <i class="fa-solid fa-heart-pulse float-icon" style="top:12%;left:8%;animation-delay:0s;"></i>
+        <i class="fa-solid fa-pills float-icon" style="top:25%;right:10%;animation-delay:1.5s;"></i>
+        <i class="fa-solid fa-stethoscope float-icon" style="bottom:20%;left:6%;animation-delay:3s;"></i>
+        <i class="fa-solid fa-dna float-icon" style="bottom:30%;right:7%;animation-delay:0.8s;"></i>
+        <i class="fa-solid fa-virus float-icon" style="top:55%;left:12%;animation-delay:2.2s;"></i>
+        <i class="fa-solid fa-brain float-icon" style="top:70%;right:14%;animation-delay:1.2s;"></i>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="auth-container">
+        <div class="auth-card" id="authCard">
+            <!-- Brand Header -->
+            <div class="auth-brand">
+                <div class="auth-brand-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="auth-brand-name">MediMind <span class="badge-ai">AI</span></h1>
+                    <p class="auth-brand-sub">Medical Intelligence Hub</p>
+                </div>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="auth-tabs" id="authTabs">
+                <button class="auth-tab active" id="loginTab" onclick="switchTab('login')">
+                    <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                </button>
+                <button class="auth-tab" id="registerTab" onclick="switchTab('register')">
+                    <i class="fa-solid fa-user-plus"></i> Register
+                </button>
+            </div>
+
+            <!-- Alert Box -->
+            <div class="auth-alert" id="authAlert" style="display:none;"></div>
+
+            <!-- LOGIN FORM -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <h2 class="auth-form-title">Welcome back 👋</h2>
+                <p class="auth-form-sub">Sign in to access your medical AI assistant</p>
+
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="loginUsername" placeholder="Enter your username" autocomplete="username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password" required>
+                        <button type="button" class="toggle-pw" onclick="togglePw('loginPassword', this)">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-btn" id="loginBtn">
+                    <span class="btn-text"><i class="fa-solid fa-right-to-bracket"></i> Sign In</span>
+                    <span class="btn-loading" style="display:none;"><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...</span>
+                </button>
+
+                <p class="auth-switch-text">
+                    Don't have an account? 
+                    <a href="#" onclick="switchTab('register'); return false;">Create one now</a>
+                </p>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                <h2 class="auth-form-title">Create account 🏥</h2>
+                <p class="auth-form-sub">Join MediMind AI for free medical intelligence</p>
+
+                <div class="form-group">
+                    <label for="regUsername">Username</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="regUsername" placeholder="Choose a username (a-z, 0-9, _)" autocomplete="username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail">Email <span class="optional">(optional)</span></label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="regPassword" placeholder="Min. 6 characters" autocomplete="new-password" required>
+                        <button type="button" class="toggle-pw" onclick="togglePw('regPassword', this)">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="pw-strength" id="pwStrength"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPasswordConfirm">Confirm Password</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock-open"></i>
+                        <input type="password" id="regPasswordConfirm" placeholder="Re-enter password" autocomplete="new-password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-btn" id="registerBtn">
+                    <span class="btn-text"><i class="fa-solid fa-user-plus"></i> Create Account</span>
+                    <span class="btn-loading" style="display:none;"><i class="fa-solid fa-circle-notch fa-spin"></i> Creating...</span>
+                </button>
+
+                <p class="auth-switch-text">
+                    Already have an account? 
+                    <a href="#" onclick="switchTab('login'); return false;">Sign in here</a>
+                </p>
+            </form>
+
+            <!-- Footer Note -->
+            <div class="auth-footer">
+                <i class="fa-solid fa-shield-halved"></i>
+                Your data is stored securely and never shared
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/auth.js"></script>
+</body>
+</html>

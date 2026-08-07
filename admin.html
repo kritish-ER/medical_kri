@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediMind AI | Admin Control Panel</title>
+    <meta name="description" content="MediMind AI Admin Dashboard — manage users, monitor chat logs, and control system settings.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body class="dark-theme">
+    <div class="app-background">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Admin Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>Admin <span class="badge-ai">Panel</span></h2>
+                    <p>MediMind AI Control</p>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-panel="panel-overview" id="navOverview">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Overview</span>
+                </button>
+                <button class="nav-btn" data-panel="panel-users" id="navUsers">
+                    <i class="fa-solid fa-users"></i>
+                    <span>User Management</span>
+                </button>
+                <button class="nav-btn" data-panel="panel-logs" id="navLogs">
+                    <i class="fa-solid fa-scroll"></i>
+                    <span>Chat Logs</span>
+                </button>
+                <button class="nav-btn" data-panel="panel-database" id="navDatabase">
+                    <i class="fa-solid fa-database"></i>
+                    <span>Database Controls</span>
+                </button>
+                <div class="nav-divider"></div>
+                <a href="/" class="nav-btn nav-link-btn">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back to App</span>
+                </a>
+            </nav>
+
+            <!-- Current Admin Info -->
+            <div class="sidebar-user-card" id="sidebarUser">
+                <div class="su-avatar">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div class="su-info">
+                    <strong id="adminUsername">Loading...</strong>
+                    <span class="role-badge admin">Administrator</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1 id="panelTitle">System Overview</h1>
+                    <p id="panelSubtitle">Monitor system health, users, and queries</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="refreshCurrentPanel()" title="Refresh data">
+                        <i class="fa-solid fa-rotate-right"></i> Refresh
+                    </button>
+                    <button class="btn btn-danger-outline" onclick="handleLogout()" id="logoutBtn">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- PANEL 1: OVERVIEW -->
+            <section class="tab-pane active" id="panel-overview">
+                <div class="admin-overview-grid">
+                    <!-- Stats Cards -->
+                    <div class="stat-card">
+                        <div class="stat-icon users"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-val" id="statUsers">—</div>
+                            <div class="stat-lbl">Registered Users</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon queries"><i class="fa-solid fa-comments"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-val" id="statQueries">—</div>
+                            <div class="stat-lbl">Total Chat Queries</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon diseases"><i class="fa-solid fa-disease"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-val" id="statDiseases">—</div>
+                            <div class="stat-lbl">Diseases in KB</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon uptime"><i class="fa-solid fa-clock"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-val" id="statUptime">—</div>
+                            <div class="stat-lbl">Server Uptime</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="admin-card full-width">
+                        <div class="admin-card-header">
+                            <h3><i class="fa-solid fa-bolt"></i> Recent Activity</h3>
+                        </div>
+                        <div class="activity-list" id="activityList">
+                            <div class="empty-state small">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                <span>Loading activity...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Quick Actions</h3>
+                        </div>
+                        <div class="quick-actions-grid">
+                            <button class="action-btn" onclick="switchPanel('panel-users')">
+                                <i class="fa-solid fa-users"></i>
+                                <span>Manage Users</span>
+                            </button>
+                            <button class="action-btn" onclick="reloadKnowledgeBase()">
+                                <i class="fa-solid fa-rotate"></i>
+                                <span>Reload KB</span>
+                            </button>
+                            <button class="action-btn" onclick="switchPanel('panel-logs')">
+                                <i class="fa-solid fa-scroll"></i>
+                                <span>View Logs</span>
+                            </button>
+                            <button class="action-btn" onclick="window.location.href='/'">
+                                <i class="fa-solid fa-robot"></i>
+                                <span>Open App</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Summary -->
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fa-solid fa-chart-pie"></i> System Summary</h3>
+                        </div>
+                        <div class="summary-list" id="summaryList">
+                            <div class="summary-item">
+                                <span class="s-label"><i class="fa-solid fa-stethoscope"></i> Symptoms Monitored</span>
+                                <span class="s-val" id="summarySymptoms">—</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="s-label"><i class="fa-solid fa-user-shield"></i> Admin Accounts</span>
+                                <span class="s-val" id="summaryAdmins">—</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="s-label"><i class="fa-solid fa-right-to-bracket"></i> Total Logins</span>
+                                <span class="s-val" id="summaryLogins">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANEL 2: USER MANAGEMENT -->
+            <section class="tab-pane" id="panel-users">
+                <div class="admin-section-wrapper">
+                    <div class="section-toolbar">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="userSearch" placeholder="Search users..." oninput="filterUsers(this.value)">
+                        </div>
+                        <div class="toolbar-right">
+                            <span class="user-count-badge" id="userCount">0 users</span>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th><i class="fa-solid fa-user"></i> Username</th>
+                                    <th><i class="fa-solid fa-envelope"></i> Email</th>
+                                    <th><i class="fa-solid fa-user-tag"></i> Role</th>
+                                    <th><i class="fa-solid fa-calendar"></i> Created</th>
+                                    <th><i class="fa-solid fa-gear"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr><td colspan="5" class="table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANEL 3: CHAT LOGS -->
+            <section class="tab-pane" id="panel-logs">
+                <div class="admin-section-wrapper">
+                    <!-- Log type tabs -->
+                    <div class="log-tabs">
+                        <button class="log-tab active" onclick="switchLogTab('chat', this)">
+                            <i class="fa-solid fa-comments"></i> Chat Logs
+                        </button>
+                        <button class="log-tab" onclick="switchLogTab('auth', this)">
+                            <i class="fa-solid fa-right-to-bracket"></i> Auth Events
+                        </button>
+                    </div>
+
+                    <!-- Chat Logs Table -->
+                    <div id="chatLogsPanel" class="log-panel active">
+                        <div class="section-toolbar">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="logSearch" placeholder="Search messages..." oninput="filterLogs(this.value)">
+                            </div>
+                        </div>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th><i class="fa-solid fa-user"></i> User</th>
+                                        <th><i class="fa-solid fa-comment"></i> Message</th>
+                                        <th><i class="fa-solid fa-tag"></i> Type</th>
+                                        <th><i class="fa-solid fa-clock"></i> Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="chatLogsBody">
+                                    <tr><td colspan="5" class="table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading logs...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Auth Logs Table -->
+                    <div id="authLogsPanel" class="log-panel">
+                        <div class="admin-table-wrapper">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th><i class="fa-solid fa-user"></i> User</th>
+                                        <th><i class="fa-solid fa-tag"></i> Event</th>
+                                        <th><i class="fa-solid fa-network-wired"></i> IP</th>
+                                        <th><i class="fa-solid fa-clock"></i> Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="authLogsBody">
+                                    <tr><td colspan="5" class="table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading logs...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANEL 4: DATABASE CONTROLS -->
+            <section class="tab-pane" id="panel-database">
+                <div class="admin-section-wrapper">
+                    <div class="db-controls-grid">
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <h3><i class="fa-solid fa-database"></i> Knowledge Base</h3>
+                            </div>
+                            <div class="db-info-grid">
+                                <div class="db-info-item">
+                                    <div class="db-info-val" id="dbDiseases">—</div>
+                                    <div class="db-info-lbl">Diseases Loaded</div>
+                                </div>
+                                <div class="db-info-item">
+                                    <div class="db-info-val" id="dbSymptoms">—</div>
+                                    <div class="db-info-lbl">Unique Symptoms</div>
+                                </div>
+                            </div>
+                            <button class="auth-btn mt-3" id="reloadKbBtn" onclick="reloadKnowledgeBase()">
+                                <i class="fa-solid fa-rotate"></i> Reload Knowledge Base
+                            </button>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <h3><i class="fa-solid fa-file-csv"></i> Dataset Files</h3>
+                            </div>
+                            <div class="file-list">
+                                <div class="file-item">
+                                    <i class="fa-solid fa-file-medical"></i>
+                                    <div class="file-info">
+                                        <span>Medical_Chatbot_GenAI.csv</span>
+                                        <small>Primary disease & drug dataset</small>
+                                    </div>
+                                    <span class="file-status ok"><i class="fa-solid fa-circle-check"></i> Active</span>
+                                </div>
+                                <div class="file-item">
+                                    <i class="fa-solid fa-file-waveform"></i>
+                                    <div class="file-info">
+                                        <span>symptoms_data.csv</span>
+                                        <small>Symptom definitions</small>
+                                    </div>
+                                    <span class="file-status ok"><i class="fa-solid fa-circle-check"></i> Active</span>
+                                </div>
+                                <div class="file-item">
+                                    <i class="fa-solid fa-file-shield"></i>
+                                    <div class="file-info">
+                                        <span>users.json</span>
+                                        <small>User account storage</small>
+                                    </div>
+                                    <span class="file-status ok"><i class="fa-solid fa-circle-check"></i> Active</span>
+                                </div>
+                                <div class="file-item">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                    <div class="file-info">
+                                        <span>chat_logs.json</span>
+                                        <small>Query history logs</small>
+                                    </div>
+                                    <span class="file-status ok"><i class="fa-solid fa-circle-check"></i> Active</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card full-width">
+                            <div class="admin-card-header">
+                                <h3><i class="fa-solid fa-terminal"></i> System Info</h3>
+                            </div>
+                            <div class="system-info-grid">
+                                <div class="sys-info-item">
+                                    <span class="sys-label">Server Status</span>
+                                    <span class="sys-val"><span class="dot-online"></span> Online</span>
+                                </div>
+                                <div class="sys-info-item">
+                                    <span class="sys-label">Framework</span>
+                                    <span class="sys-val">Flask (Python)</span>
+                                </div>
+                                <div class="sys-info-item">
+                                    <span class="sys-label">Auth Method</span>
+                                    <span class="sys-val">Session-based + SHA-256</span>
+                                </div>
+                                <div class="sys-info-item">
+                                    <span class="sys-label">Storage</span>
+                                    <span class="sys-val">JSON File System</span>
+                                </div>
+                                <div class="sys-info-item">
+                                    <span class="sys-label">AI Engine</span>
+                                    <span class="sys-val">Statistical NLP (Custom)</span>
+                                </div>
+                                <div class="sys-info-item">
+                                    <span class="sys-label">Uptime</span>
+                                    <span class="sys-val" id="sysUptime">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content confirm-modal">
+            <h3 id="confirmTitle">Confirm Action</h3>
+            <p id="confirmMessage">Are you sure?</p>
+            <div class="confirm-btns">
+                <button class="btn btn-outline" onclick="closeConfirm()">Cancel</button>
+                <button class="btn btn-danger" id="confirmOk">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>
